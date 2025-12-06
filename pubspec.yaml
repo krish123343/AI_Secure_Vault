@@ -1,0 +1,61 @@
+name: ai_secure_access
+description: "AI Secure Access – Face Recognition & Security Overlay System"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 🖥️ UI & Icons
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1   
+
+  # 🎥 Camera & AI (Face Detection)
+  camera: ^0.11.3
+  google_mlkit_face_detection: ^0.13.1
+
+  # ⚙️ Utilities
+  path_provider: ^2.1.5
+  http: ^1.2.2
+  shared_preferences: ^2.2.3
+  image: ^4.2.2
+  intl: ^0.20.2
+  encrypt: ^5.0.3
+
+  # 📧 Email Sending
+  mailer: ^6.1.0
+
+  # 🪟 Overlay Window
+  flutter_overlay_window: ^0.5.0
+
+  # 🧠 App Icons
+  flutter_launcher_icons: ^0.14.4
+
+  # 📁 File Picker (Added as requested)
+  file_picker: ^8.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icon/logo.png
+    - assets/icon/app_icon.png
+    - assets/icon/
+
+# ⚙️ Configuration for flutter_launcher_icons
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#1F2C3A"
+  adaptive_icon_foreground: "assets/icon/app_icon.png"
