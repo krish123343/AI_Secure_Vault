@@ -1,16 +1,36 @@
-# ai_secure_access
+# AI Secure Vault (ai_secure_access)
 
-A new Flutter project.
+AI Secure Vault is a Flutter-based application that protects confidential data
+using AI-powered face recognition and security monitoring.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🔐 About
 
-A few resources to get you started if this is your first Flutter project:
+**AI Secure Vault** (also referred to as `ai_secure_access`) provides secure
+access control using facial recognition. It helps prevent unauthorized access
+and logs intruder attempts with optional alerts.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Key features include:
+- Face registration and authentication
+- Intruder detection and logging
+- Secure local storage
+- AI-based face comparison
+- Optional email alerts
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🚀 Getting Started
+
+This project is built using **Flutter**.
+
+### Prerequisites
+- Flutter SDK installed
+- Android device or emulator
+- Camera permission enabled
+
+### Run the app
+```bash
+flutter clean
+flutter pub get
+flutter run

@@ -1,104 +1,125 @@
 import 'package:flutter/material.dart';
-import 'face_detection_screen.dart';
-import 'vault_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isRegistered = false;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStatus();
+  }
+
+  Future<void> _loadStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    _isRegistered = prefs.getBool("face_registered") ?? false;
+
+    if (!mounted) return;
+    setState(() => _loading = false);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0E0E0E),
-
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("AI Secure Access"),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         elevation: 0,
+        title: const Text(
+          "AI Secure Access",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset(
+              "assets/icon/logo.png",
+              height: 120,
+            ),
 
-            _menuButton(
-              icon: Icons.face,
-              title: "Face Unlock",
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const FaceDetectionScreen()),
+            const SizedBox(height: 30),
+
+            const Text(
+              "Welcome to\nAI Secure Access",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
-            _menuButton(
-              icon: Icons.lock,
-              title: "Your Vault",
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const VaultScreen()),
+            const Text(
+              "Smart security powered by AI.\nChoose an option to begin.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
 
-            _menuButton(
-              icon: Icons.settings,
-              title: "Settings",
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _menuButton({
-    required IconData icon,
-    required String title,
-    required Function() onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-
-      child: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: Colors.black,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blueAccent.withOpacity(0.3),
-              blurRadius: 12,
-            )
-          ],
-        ),
-
-        child: Row(
-          children: [
-            const SizedBox(width: 20),
-
-            Icon(icon, color: Colors.blueAccent, size: 32),
-
-            const SizedBox(width: 20),
-
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
+            /// FACE ACCESS BUTTON
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.lock),
+                label: Text(
+                  _isRegistered
+                      ? "Detect Face & Enter Vault"
+                      : "Register Face",
+                  style: const TextStyle(fontSize: 18),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/face");
+                },
               ),
             ),
 
-            const Spacer(),
+            const SizedBox(height: 15),
 
-            const Icon(Icons.arrow_forward_ios, color: Colors.white70),
-
-            const SizedBox(width: 15),
+            /// PIN FALLBACK BUTTON (ALWAYS AVAILABLE)
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "/pin");
+                },
+                child: const Text(
+                  "Unlock with PIN",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.deepPurple,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
