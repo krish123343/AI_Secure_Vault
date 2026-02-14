@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.ai_secure_access"
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
