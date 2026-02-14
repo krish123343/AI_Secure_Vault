@@ -1,3 +1,5 @@
+
+import 'package:ai_secure_access/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bg,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.bg,
         elevation: 0,
         title: const Text(
           "AI Secure Access",
@@ -98,6 +100,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.pushNamed(context, "/face");
                 },
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.primary, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ),
 
@@ -115,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   "Unlock with PIN",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.deepPurple,
+                    color: AppColors.primary,
                   ),
                 ),
               ),

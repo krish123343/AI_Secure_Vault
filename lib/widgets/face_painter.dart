@@ -1,43 +1,35 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 class FacePainter extends CustomPainter {
-  final List<Face> faces;
   final Size imageSize;
+  final Face face;
 
-  FacePainter({
-    required this.faces,
-    required this.imageSize,
-  });
+  FacePainter({required this.imageSize, required this.face});
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (imageSize.width == 0 || imageSize.height == 0) return;
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..color = Colors.red;
 
-    // Calculate scaling factor (camera → screen)
-    final double scaleX = size.width / imageSize.width;
-    final double scaleY = size.height / imageSize.height;
+    final scaleX = size.width / imageSize.width;
+    final scaleY = size.height / imageSize.height;
 
-    final Paint paint = Paint()
-      ..color = Colors.greenAccent
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke;
+    final rect = Rect.fromLTRB(
+      face.boundingBox.left * scaleX,
+      face.boundingBox.top * scaleY,
+      face.boundingBox.right * scaleX,
+      face.boundingBox.bottom * scaleY,
+    );
 
-    for (final face in faces) {
-      final rect = face.boundingBox;
-
-      final scaledRect = Rect.fromLTRB(
-        rect.left * scaleX,
-        rect.top * scaleY,
-        rect.right * scaleX,
-        rect.bottom * scaleY,
-      );
-
-      // Draw rectangle
-      canvas.drawRect(scaledRect, paint);
-    }
+    canvas.drawRect(rect, paint);
   }
 
   @override
-  bool shouldRepaint(FacePainter oldDelegate) => true;
+  bool shouldRepaint(FacePainter oldDelegate) {
+    return oldDelegate.imageSize != imageSize || oldDelegate.face != face;
+  }
 }

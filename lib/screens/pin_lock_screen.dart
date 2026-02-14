@@ -1,12 +1,10 @@
+
+import 'package:ai_secure_access/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../services/pin_lock_service.dart';
 
 class PinLockScreen extends StatefulWidget {
-  /// isSetup = true → create PIN (first install)
-  /// isSetup = false → unlock using PIN
-  final bool isSetup;
-
-  const PinLockScreen({super.key, this.isSetup = false});
+  const PinLockScreen({super.key});
 
   @override
   State<PinLockScreen> createState() => _PinLockScreenState();
@@ -24,22 +22,13 @@ class _PinLockScreenState extends State<PinLockScreen> {
       return;
     }
 
-    if (widget.isSetup) {
-      /// 🔐 SAVE PIN
-      await PinLockService.savePin(pin);
+    final ok = await PinLockService.verifyPin(pin);
 
+    if (ok) {
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, "/home");
+      Navigator.pushReplacementNamed(context, "/vault");
     } else {
-      /// 🔓 VERIFY PIN
-      final ok = await PinLockService.verifyPin(pin);
-
-      if (ok) {
-        if (!mounted) return;
-        Navigator.pushReplacementNamed(context, "/vault");
-      } else {
-        setState(() => error = "Incorrect PIN");
-      }
+      setState(() => error = "Incorrect PIN");
     }
   }
 
@@ -52,54 +41,96 @@ class _PinLockScreenState extends State<PinLockScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.bg,
       appBar: AppBar(
-        title: Text(widget.isSetup ? "Set PIN" : "Enter PIN"),
+        backgroundColor: AppColors.bg,
+        elevation: 0,
+        title: const Text(
+          "Enter PIN",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.lock_outline,
               size: 80,
-              color: Colors.deepPurple,
+              color: AppColors.primary,
             ),
             const SizedBox(height: 20),
-
-            Text(
-              widget.isSetup
-                  ? "Create a 4-digit PIN"
-                  : "Enter your 4-digit PIN",
-              style: const TextStyle(fontSize: 18),
-            ),
-
-            const SizedBox(height: 20),
-
-            TextField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-              maxLength: 4,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "PIN",
-                errorText: error.isEmpty ? null : error,
-                border: const OutlineInputBorder(),
+            const Text(
+              "Enter your 4-digit PIN to unlock the vault.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
               ),
             ),
-
+            const SizedBox(height: 40),
+            _buildPinField(_controller, "Enter PIN"),
             const SizedBox(height: 20),
-
+            if (error.isNotEmpty)
+              Text(
+                error,
+                style: const TextStyle(color: Colors.red, fontSize: 16),
+              ),
+            const SizedBox(height: 40),
             SizedBox(
-              height: 50,
               width: double.infinity,
+              height: 55,
               child: ElevatedButton(
                 onPressed: _handlePin,
-                child: Text(widget.isSetup ? "Save PIN" : "Unlock"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  "Unlock",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPinField(TextEditingController controller, String label) {
+    return SizedBox(
+      width: 200,
+      child: TextField(
+        controller: controller,
+        obscureText: true,
+        maxLength: 4,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        decoration: InputDecoration(
+          labelText: label,
+          counterText: "", // Hide the counter
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade400, width: 2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          ),
         ),
       ),
     );
